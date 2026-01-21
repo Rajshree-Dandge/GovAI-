@@ -1,0 +1,1 @@
+# For communication with frontend . This is Api Layer .It sends images to detective and brain

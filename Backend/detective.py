@@ -1,1 +1,1 @@
-# this fileis for fake or real check of images
+# this file for fake or real check of images

@@ -56,5 +56,38 @@ def home():
     return {"message":"Backend is running!!"}
 # basic route to check if backend is running
 
+# handling image and text together
+@app.post("/submit-complaint")
+async def submit_complaint(
+    # tell app that these are desc and image came from frontend
+    des: str = Form(...),
+    file: UploadFile=File(...)
+):
+
+    # --step1. save image locally---
+    file_loc=f"uploads/{file.filename}"
+    # create uploads if not there
+    os.makedirs("uploads",exist_ok=True)
+    
+    # open a new file in right binary mode
+    with open(file_loc,"wb+") as file_obj:
+        # write the uplaoded image data into that file
+        file_obj.write(file.file.read())
+
+    # --step2. save data info in db---
+    conn=sqlite3.connect("grievance.db")
+    cursor=conn.cursor()
+
+    cursor.execute('''
+    INSERT INTO complaints (text_desc,image_path) VALUES (?,?)''',(des,file_loc))
+    conn.commit()
+    conn.close()
+    return {
+        "status":"success",
+        "message": "Complaint submitted successfully",
+        "rec_text":des,
+        "image_Saved_at":file_loc
+    }
+
 
 
